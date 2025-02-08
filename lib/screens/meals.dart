@@ -1,56 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:meal/models/meal.dart';
-import 'package:meal/screens/meal_details.dart';
-import 'package:meal/widgets/meal_item.dart';
+
+import 'package:meals/models/meal.dart';
+import 'package:meals/screens/meal_details.dart';
+import 'package:meals/widgets/meal_item.dart';
 
 class MealsScreen extends StatelessWidget {
   const MealsScreen({
     super.key,
     this.title,
     required this.meals,
-    required this.toggleFavorite,
+    required this.onToggleFavorite,
   });
 
   final String? title;
   final List<Meal> meals;
-  final void Function(Meal meal) toggleFavorite;
+  final void Function(Meal meal) onToggleFavorite;
 
   void selectMeal(BuildContext context, Meal meal) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => MealDetailsScreen(
-        meal: meal,
-        toggleFavorite: toggleFavorite,
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => MealDetailsScreen(
+          meal: meal,
+          onToggleFavorite: onToggleFavorite,
+        ),
       ),
-    ));
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget content = const Center(
-      child: Column(children: [
-        SizedBox(height: 62),
-        Text('No meals found, \nplease check your filters!',
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 24, color: Colors.red)),
-        SizedBox(height: 32),
-        Text('Try selecting different filters.',
-            style: TextStyle(
-                fontWeight: FontWeight.w300,
-                fontSize: 20,
-                color: Colors.yellow)),
-      ]),
+    Widget content = Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Uh oh ... nothing here!',
+            style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.onBackground,
+                ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Try selecting a different category!',
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.onBackground,
+                ),
+          ),
+        ],
+      ),
     );
 
     if (meals.isNotEmpty) {
       content = ListView.builder(
         itemCount: meals.length,
-        itemBuilder: (context, index) => MealItem(
-            meal: meals[index],
-            onMealSelected: (meal) {
-              selectMeal(context, meal);
-            }),
+        itemBuilder: (ctx, index) => MealItem(
+          meal: meals[index],
+          onSelectMeal: (meal) {
+            selectMeal(context, meal);
+          },
+        ),
       );
     }
+
     if (title == null) {
       return content;
     }
