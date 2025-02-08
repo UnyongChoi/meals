@@ -46,3 +46,4 @@ app.*.map.json
 macos/Flutter/GeneratedPluginRegistrant.swift
 android/gradle/wrapper/gradle-wrapper.properties
 pubspec.lock
+pubspec.lock
